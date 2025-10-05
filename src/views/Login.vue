@@ -1,5 +1,4 @@
 <script>
-import { toast } from 'vue3-toastify';
 import {defineComponent} from 'vue'
 
 export default defineComponent({
@@ -11,12 +10,6 @@ export default defineComponent({
       window.history.back()
     },
 },
-
-  // mounted() {
-  //   // toast("Wow so easy !", {
-  //   //   autoClose: 1000,
-  //   });
-  // }
 
 });
 
