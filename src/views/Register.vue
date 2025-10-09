@@ -119,7 +119,12 @@ export default defineComponent({
         <font-awesome-icon @click="this.onOff = !this.onOff" :icon="onOff? 'fa-eye' : 'fa-eye-slash'" class="absolute right-3 top-17.5 text-2xl text-white opacity-70 cursor-pointer" icon="fa-solid" />
         </div>
 
-        <button :class="{'disabled': !isDisabled}" :disabled="!isDisabled" class="text-white bg-sky-700 p-3 mt-14 text-base font-normal rounded cursor-pointer" type="submit">Register</button>
+        <button :class="{'disabled': !isDisabled}" :disabled="!isDisabled" class="flex items-center justify-center text-white bg-sky-700 p-3 mt-14 text-base font-normal rounded" type="submit">
+          <svg v-if="isLoading" class="mr-3 size-5 animate-spin" viewBox="0 0 24 24">
+            <font-awesome-icon icon="fa-solid fa-circle-notch" />
+          </svg>Register
+        </button>
+
         <div class="flex gap-2">
           <div class="text-white mt-12 opacity-87 text-xs font-normal">Already have an account?</div>
           <router-link class="text-white mt-12 text-xs font-normal" :to="'login'">Login</router-link>

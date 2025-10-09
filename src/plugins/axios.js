@@ -1,10 +1,16 @@
 import axios from 'axios';
+import {useAuthStore} from '@/stores/auth.js'
 
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
 })
 
 axiosInstance.interceptors.request.use(function (config) {
+    const authStore = useAuthStore();
+    const authToken = authStore.token;
+    if (authToken) {
+        config.headers.Authorization = `Bearer ${authToken}`;
+    }
     // Здесь можете сделать что-нибудь с перед отправкой запроса
     return config;
 }, function (error) {
