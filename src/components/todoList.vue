@@ -42,6 +42,6 @@ export default defineComponent({
         <font-awesome-icon class="text-white text-2xl font-normal" icon="fa-solid fa-xmark" />
       </div>
     </button>
-    <edit-todo-bar-comp :index="index" :todo="keyProps" v-if="editTodoBar" @click.self="this.editTodoBar = !this.editTodoBar" ></edit-todo-bar-comp>
+    <edit-todo-bar-comp :cancel-edit="this.editTodoBar = !this.editTodoBar" :index="index" :todo="keyProps" v-if="editTodoBar" @click.self="this.editTodoBar = !this.editTodoBar" ></edit-todo-bar-comp>
   </main>
 </template>

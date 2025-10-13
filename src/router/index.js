@@ -23,6 +23,11 @@ const router = createRouter({
       name: 'register',
       component: () => import('../views/Register.vue'),
     },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/ProfileView.vue'),
+    }
   ],
 })
 router.beforeEach((to, from, next) => {

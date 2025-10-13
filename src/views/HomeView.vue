@@ -6,12 +6,15 @@ import todoList  from "@/components/todoList.vue";
 import {useAuthStore} from "@/stores/auth.js";
 import addTodoBarComp from "@/components/addTodoBar.vue";
 import editTodoBarComp from "@/components/editTodoBar.vue";
+import pagination from "@/components/pagination.vue";
+import {toast} from "vue3-toastify";
 
 export default defineComponent({
   components: {
     todoList,
     addTodoBarComp,
     editTodoBarComp,
+    pagination,
   },
   setup() {
     const todosStore = useTodosStore()
@@ -29,6 +32,38 @@ export default defineComponent({
   methods: {
     goToHome() {
       this.$router.push({ path: '/', replace: true })
+    },
+    getSelectedTodos(){
+      if (this.selectCompleted === 'complete') {
+        this.isLoading = true;
+        this.todosStore.getTodosComplete({
+          complete: 'complete',
+        }).then(res => {
+        }).catch((error) => {
+          toast(error.response.data.message, {
+            autoClose: 5000,
+          })
+        }).finally(() => {
+          this.isLoading = false;
+        })
+      } else if (this.selectCompleted === 'uncomplete') {
+        this.isLoading = true;
+        this.todosStore.getTodosComplete({
+          complete: 'uncomplete',
+        }).then(res => {
+        }).catch((error) => {
+          toast(error.response.data.message, {
+            autoClose: 5000,
+          })
+        }).finally(() => {
+          this.isLoading = false;
+        })
+      } else {
+        this.todosStore.getTodos()
+      }
+    },
+    goToProfile() {
+      this.$router.push({ path: '/profile', replace: true })
     },
   },
   mounted() {
@@ -67,16 +102,17 @@ export default defineComponent({
           <p class="text-white text-2xl font-normal">Tap + to add your tasks</p>
         </div>
         <div class="container px-2 sm:px-6 md:px-8 mx-auto" v-else>
-          <select class="text-white bg-gray-600 p-1 rounded m-2" v-model="selectCompleted">
+          <select @change="getSelectedTodos" class="text-white bg-gray-600 p-1 rounded m-2" v-model="selectCompleted">
             <option class="text-white" value="all">Все</option>
             <option class="text-white" value="completed">Только выполненные</option>
             <option class="text-white" value="unCompleted">Не выполненные</option>
           </select>
           <todo-list class="cursor-pointer" :todos="todosStore.todos" />
+          <pagination>
+          </pagination>
         </div>
       </div>
     </div>
     <add-todo-bar-comp v-if="addTodoBar" @click.self="this.addTodoBar = !this.addTodoBar"></add-todo-bar-comp>
-<!--    <edit-todo-bar-comp v-if="editTodoBar" @click.self="this.editTodoBar = !this.editTodoBar"></edit-todo-bar-comp>-->
   </main>
 </template>

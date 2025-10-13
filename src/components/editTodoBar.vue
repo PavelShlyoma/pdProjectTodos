@@ -3,6 +3,7 @@ import {defineComponent} from "vue";
 import {toast} from "vue3-toastify";
 import {useTodosStore} from "@/stores/todos.js";
 export default defineComponent({
+  emits: [ 'cancelEdit' ],
   props: ["todo"],
   setup() {
     const todosStore = useTodosStore()
@@ -29,6 +30,7 @@ export default defineComponent({
           })
         }).finally(() => {
           this.isLoading = false;
+          this.$emit('cancelEdit')
         })
       }
     },
@@ -45,6 +47,7 @@ export default defineComponent({
         })
       }).finally(() => {
         this.isLoading = false;
+        this.$emit('cancelEdit')
       })
     }
   },
