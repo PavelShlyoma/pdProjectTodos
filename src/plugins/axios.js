@@ -17,7 +17,7 @@ axiosInstance.interceptors.request.use(function (config) {
     // Сделайте что-нибудь с ошибкой запроса
     return Promise.reject(error);
 });
-
+const newGetUrl = '';
 // Добавляем перехват ответов
 axiosInstance.interceptors.response.use(function (response) {
     // Любой код состояния, находящийся в диапазоне 2xx, вызывает срабатывание этой функции

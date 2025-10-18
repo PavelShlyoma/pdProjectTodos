@@ -39,7 +39,7 @@ export default defineComponent({
 
 <template>
   <main class="h-full fixed  w-full inset-0 flex items-center justify-center flex-col p-2">
-    <div class=" bg-gray-600  rounded-2xl max-w-xl w-full flex items-center justify-between opacity-87">
+    <div class=" bg-gray-800  rounded-2xl max-w-xl w-full flex items-center justify-between">
       <div class="flex flex-col">
         <h3 class="text-white font-normal p-3" >Add Task</h3>
         <input  v-model="textTodo" class="text-white font-normal p-3 rounded mt-2 border border-white m-3 w-100" id="text" type="text" placeholder="Do math homework" />

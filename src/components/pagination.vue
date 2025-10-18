@@ -29,7 +29,6 @@ export default defineComponent({
       for (let i = 0; i < this.pageTotal; i++) {
         arr.push(i + 1);
       }
-      console.log(arr);
       return arr;
     },
   },

@@ -27,6 +27,10 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: () => import('../views/ProfileView.vue'),
+      meta: {
+        requiresAuth: true,
+
+      }
     }
   ],
 })
@@ -35,7 +39,12 @@ router.beforeEach((to, from, next) => {
     const authStore = useAuthStore();
     // Check authentication status
     if (!authStore.token) {
-      next({ name: 'login', query: { redirect: to.fullPath } });
+      authStore.refresh({
+      }).then(response => {
+        next();
+      }).catch(error => {
+        next({ name: 'login', query: { redirect: to.fullPath } });
+      })
     } else {
       next();
     }

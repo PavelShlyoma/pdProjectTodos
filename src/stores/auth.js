@@ -6,7 +6,7 @@ export const useAuthStore = defineStore('auth', () => {
     const token = ref('')
 
     const tokenExist = computed(() => {
-        return atob(token.value.split('.')[1]);
+        return JSON.parse(atob(token.value.split('.')[1]));
     })
 
     function register(data) {

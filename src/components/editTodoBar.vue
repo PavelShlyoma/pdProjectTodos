@@ -13,6 +13,8 @@ export default defineComponent({
     return {
       textTodo: '',
       isLoading: false,
+      complete: false,
+      selectCompleted: 'unCompleted',
     }
   },
   methods: {
@@ -56,11 +58,15 @@ export default defineComponent({
 </script>
 
 <template>
-  <main class="h-full fixed  w-full inset-0 flex items-center justify-center flex-col p-2">
-    <div class=" bg-gray-600  rounded-2xl max-w-xl w-full flex items-center justify-between opacity-87">
+  <main @click.self="$emit('cancelEdit')" class="h-full fixed  w-full inset-0 flex items-center justify-center flex-col p-2">
+    <div class=" bg-gray-800  rounded-2xl max-w-xl w-full flex items-center justify-between">
       <div class="flex flex-col">
         <h3 class="text-white font-normal p-3" >Edit Task</h3>
         <input  v-model="textTodo" class="text-white font-normal p-3 rounded mt-2 border border-white m-3 w-100" id="text" type="text" placeholder="Do math homework" />
+        <select v-if="this.textTodo" class="text-white font-normal p-3 rounded mt-2 border border-white m-3 w-100" v-model="selectCompleted">
+          <option class="text-white" value="completed">Выполненное</option>
+          <option class="text-white" value="unCompleted">Не выполненное</option>
+        </select>
       </div>
       <div class="flex flex-col items-center p-3 gap-3">
         <button @click="this.textTodo = ''" class="text-white border rounded font-normal p-1 border-b-emerald-200 cursor-pointer">Reset</button>

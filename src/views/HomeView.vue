@@ -8,6 +8,7 @@ import addTodoBarComp from "@/components/addTodoBar.vue";
 import editTodoBarComp from "@/components/editTodoBar.vue";
 import pagination from "@/components/pagination.vue";
 import {toast} from "vue3-toastify";
+import { useDark, useToggle } from '@vueuse/core'
 
 export default defineComponent({
   components: {
@@ -19,7 +20,9 @@ export default defineComponent({
   setup() {
     const todosStore = useTodosStore()
     const authStore = useAuthStore()
-    return { todosStore, authStore }
+    const isDark = useDark()
+    const toggleDark = useToggle(isDark)
+    return { todosStore, authStore, isDark, toggleDark }
   },
   data() {
     return {
@@ -34,7 +37,7 @@ export default defineComponent({
       this.$router.push({ path: '/', replace: true })
     },
     getSelectedTodos(){
-      if (this.selectCompleted === 'complete') {
+      if (this.selectCompleted === 'completed') {
         this.isLoading = true;
         this.todosStore.getTodosComplete({
           complete: 'complete',
@@ -46,7 +49,7 @@ export default defineComponent({
         }).finally(() => {
           this.isLoading = false;
         })
-      } else if (this.selectCompleted === 'uncomplete') {
+      } else if (this.selectCompleted === 'unCompleted') {
         this.isLoading = true;
         this.todosStore.getTodosComplete({
           complete: 'uncomplete',
@@ -81,16 +84,23 @@ export default defineComponent({
           <div class="flex items-center justify-between">
             <div class="flex flex-col items-center gap-2">
               <font-awesome-icon class="text-white font-bold text-xl" icon="fa-solid fa-house" />
-              <div class="text-white text-base font-medium">Index</div>
+              <div class="text-white text-base font-medium cursor-pointer">Index</div>
             </div>
             <div class="relative">
               <div @click="this.addTodoBar = !this.addTodoBar" class="bg-blue-600 w-17 h-17 rounded-4xl text-white text-4xl text-center content-center font-light absolute top-4 -left-7 cursor-pointer">
                 +
               </div>
             </div>
-            <div class="flex flex-col items-center gap-2">
-              <font-awesome-icon class="text-white font-bold text-xl" icon="fa-solid fa-id-card-clip" />
-              <div class="text-white text-base font-medium">Profile</div>
+            <div class="flex items-center gap-2">
+              <div>
+                <button @click="this.toggleDark()">
+                  test: {{ this.isDark }}
+                </button>
+              </div>
+              <div @click="goToProfile" class="flex flex-col items-center gap-2">
+                <font-awesome-icon class="text-white font-bold text-xl" icon="fa-solid fa-id-card-clip" />
+                <div class="text-white text-base font-medium cursor-pointer">Profile</div>
+              </div>
             </div>
           </div>
         </div>
