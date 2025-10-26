@@ -1,10 +1,8 @@
 <script>
-import { defineComponent } from "vue";
-import { toast } from "vue3-toastify";
 import { useTodosStore } from "@/stores/todos.js";
 
-export default defineComponent({
-  emits: ["cancelEdit"],
+export default {
+  emits: ["cancelEditTodoBar"],
   props: ["todo"],
   setup() {
     const todosStore = useTodosStore();
@@ -33,18 +31,13 @@ export default defineComponent({
             text: this.textTodo,
             is_complete: this.complete,
           })
-          .then((res) => {
+          .then(() => {
             this.todo.text = this.textTodo;
             this.todo.is_complete = this.complete;
           })
-          .catch((error) => {
-            toast(error.response.data.message, {
-              autoClose: 5000,
-            });
-          })
           .finally(() => {
             this.isLoading = false;
-            this.$emit("cancelEdit");
+            this.$emit("cancelEditTodoBar");
           });
       }
     },
@@ -54,29 +47,22 @@ export default defineComponent({
         .deleteTodos({
           id: this.todo.id,
         })
-        .then((res) => {
-          const index = this.todosStore.todos.findIndex(
-            (todo) => todo.id === this.todo.id,
-          );
+        .then(() => {
           this.todosStore.getTodos();
-        })
-        .catch((error) => {
-          toast(error.response.data.message, {
-            autoClose: 5000,
-          });
+          this.todosStore.currentPage = 1;
         })
         .finally(() => {
           this.isLoading = false;
-          this.$emit("cancelEdit");
+          this.$emit("cancelEditTodoBar");
         });
     },
   },
-});
+};
 </script>
 
 <template>
   <main
-    @click.self="$emit('cancelEdit')"
+    @click.self="$emit('cancelEditTodoBar')"
     class="h-full fixed w-full inset-0 flex items-center justify-center flex-col p-2"
   >
     <div
@@ -92,7 +78,7 @@ export default defineComponent({
           placeholder="Do math homework"
         />
         <div
-          v-if="this.textTodo"
+          v-if="textTodo"
           class="text-black dark:text-white flex justify-between bg-gray-400 dark:bg-gray-500 font-normal p-3 rounded mt-2 border border-primary-400 m-3 w-100 cursor-pointer"
         >
           <input
@@ -114,13 +100,14 @@ export default defineComponent({
       </div>
       <div class="flex flex-col items-center p-3 gap-3">
         <button
-          @click="this.textTodo = ''"
+          @click="textTodo = ''"
           class="text-black dark:text-white border rounded font-normal p-1 border-primary-400 transition duration-300 ease-in cursor-pointer hover:scale-120"
         >
           Reset
         </button>
         <button
           @click="deleteTodoElement"
+          :disabled="isLoading"
           class="text-black dark:text-white border rounded font-normal p-1 border-primary-400 transition duration-300 ease-in cursor-pointer hover:scale-120 flex items-center justify-center"
         >
           <svg
@@ -133,11 +120,11 @@ export default defineComponent({
         </button>
         <button
           :class="
-            !this.textTodo
+            !textTodo
               ? 'cursor-default opacity-60'
               : 'transition duration-300 ease-in cursor-pointer hover:scale-120'
           "
-          :disabled="!this.textTodo"
+          :disabled="!textTodo && isLoading"
           @click="editTodoElement"
           class="text-black dark:text-white border rounded font-normal p-1 border-primary-400 flex items-center justify-center"
         >

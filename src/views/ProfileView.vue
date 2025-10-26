@@ -1,15 +1,15 @@
 <script>
-import { defineComponent } from "vue";
 import { useTodosStore } from "@/stores/todos.js";
 import { useAuthStore } from "@/stores/auth.js";
-import { toast } from "vue3-toastify";
+import {useDark, useToggle} from "@vueuse/core";
 
-export default defineComponent({
-  components: {},
+export default{
   setup() {
     const todosStore = useTodosStore();
     const authStore = useAuthStore();
-    return { todosStore, authStore };
+    const isDark = useDark();
+    const toggleDark = useToggle(isDark);
+    return { todosStore, authStore, isDark, toggleDark };
   },
   data() {
     return {
@@ -17,20 +17,12 @@ export default defineComponent({
     };
   },
   methods: {
-    goToLogin() {
-      this.$router.push({ path: "/login", replace: true });
-    },
     sendRequestLogout() {
       this.isLoading = true;
       this.authStore
         .logout({})
-        .then((response) => {
-          this.goToLogin();
-        })
-        .catch((error) => {
-          toast(error.response.data.message, {
-            autoClose: 5000,
-          });
+        .then(() => {
+          this.$router.push({ path: "/login", replace: true });
         })
         .finally(() => {
           this.isLoading = false;
@@ -40,7 +32,7 @@ export default defineComponent({
   mounted() {
     this.todosStore.getTodos();
   },
-});
+};
 </script>
 
 <template>
@@ -53,19 +45,20 @@ export default defineComponent({
       </div>
 
       <div class="text-white text-2xl font-bold p-2 max-w-6xl mx-auto">
-        Email: {{ this.authStore.tokenExist.email }}
+        Email: {{ authStore.tokenExist.email }}
       </div>
 
       <div class="text-white text-2xl font-bold p-2 max-w-6xl mx-auto">
-        Tasks created: {{ this.todosStore.total }}
+        Tasks created: {{ todosStore.total }}
       </div>
 
       <div class="text-white text-2xl font-bold p-2 max-w-6xl mx-auto">
-        Role: {{ this.authStore.tokenExist.role }}
+        Role: {{ authStore.tokenExist.role }}
       </div>
 
       <button
         @click="sendRequestLogout"
+        :disabled="isLoading"
         class="text-white text-3xl font-bold text-center cursor-pointer bg-gray-800 dark:bg-gray-400 w-full rounded p-3"
       >
         <svg

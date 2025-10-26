@@ -1,9 +1,7 @@
 <script>
-import { defineComponent } from "vue";
 import { useTodosStore } from "@/stores/todos.js";
-import { toast } from "vue3-toastify";
 
-export default defineComponent({
+export default {
   setup() {
     const todosStore = useTodosStore();
 
@@ -12,84 +10,78 @@ export default defineComponent({
   props: ["todos"],
   data() {
     return {
-      currentPage: 1,
       isLoading: false,
     };
   },
   computed: {
     pageTotal() {
       let total = Math.ceil(this.todosStore.total / 10);
-      if (total > 1) {
-        return total;
-      }
-    },
-    arrPage() {
-      const arr = [];
-      for (let i = 0; i < this.pageTotal; i++) {
-        arr.push(i + 1);
-      }
-      return arr;
+      return ((total > 1)? total : 0);
     },
   },
   methods: {
     newPage(page) {
-      if (page !== this.currentPage) {
-        this.currentPage = page;
+      if (page !== this.todosStore.currentPage) {
+        this.todosStore.currentPage = page;
         this.isLoading = true;
         this.todosStore
-          .getTodosPage({
-            page: page,
-          })
-          .then((res) => {})
-          .catch((error) => {
-            toast(error.response.data.message, {
-              autoClose: 5000,
-            });
-          })
+          .getTodos( null, this.todosStore.currentPage)
           .finally(() => {
             this.isLoading = false;
           });
       }
     },
   },
-});
+};
 </script>
 
 <template>
   <main
-    v-if="arrPage.length !== 0"
-    class="flex justify-center items-center gap-1 mt-6"
+    v-if="pageTotal !== 0"
+    class="flex justify-center items-center mt-6"
   >
-    <div v-for="(page, index) in arrPage" :key="page">
+    <button
+        @click="newPage( 1)"
+        :disabled="todosStore.currentPage - 1 === 0"
+        :class="(todosStore.currentPage - 1 === 0)? 'opacity-50 cursor-default' : 'opacity-100 cursor-pointer hover:scale-120'"
+        class="transition duration-300 ease-in text-white dark:text-black text-xl font-normal px-1 flex items-center justify-center"
+    >
+      <<
+    </button>
+    <button
+        @click="newPage(todosStore.currentPage - 1)"
+        :disabled="todosStore.currentPage - 1 === 0"
+        :class="(todosStore.currentPage - 1 === 0)? 'opacity-50 cursor-default' : 'opacity-100 cursor-pointer hover:scale-120'"
+        class="transition duration-300 ease-in text-white dark:text-black text-xl font-normal px-1 flex items-center justify-center"
+    >
+      <
+    </button>
+    <div class="p-1" v-for="page in pageTotal" :key="page">
       <button
-        v-if="page - this.currentPage < 4 || page - this.currentPage > -4"
+        v-if="page - todosStore.currentPage < 4 && page - todosStore.currentPage > -4"
         @click="newPage(page)"
-        class="transition duration-300 ease-in cursor-pointer hover:scale-120 text-white dark:text-black text-2xl font-normal flex items-center justify-center"
-        :class="{ 'bg-red': this.currentPage === page }"
+        class="transition duration-300  ease-in cursor-pointer  hover:scale-110 text-white dark:text-black text-2xl font-normal flex items-center justify-center"
+        :class="{ 'rounded scale-120 hover:scale-120': (todosStore.currentPage === page) }"
       >
         {{ page }}
       </button>
-      <div
-        v-else
-        class="text-white dark:text-black text-2xl font-normal cursor-default"
-      >
-        .
-      </div>
     </div>
 
     <button
-      @click="newPage(this.currentPage - 1)"
-      :disabled="this.currentPage - 1 === 0"
-      class="transition duration-300 ease-in cursor-pointer hover:scale-120 text-white dark:text-black text-2xl font-normal px-1 flex items-center justify-center"
+      @click="newPage(todosStore.currentPage + 1)"
+      :disabled="todosStore.currentPage === pageTotal"
+      :class="(todosStore.currentPage === pageTotal)? 'opacity-50 cursor-default' : 'opacity-100 cursor-pointer hover:scale-120'"
+      class="transition duration-300 ease-in text-white dark:text-black text-xl font-normal px-1 flex items-center justify-center"
     >
-      prev
+      >
     </button>
     <button
-      @click="newPage(this.currentPage + 1)"
-      :disabled="this.currentPage === this.arrPage[this.arrPage.length - 1]"
-      class="transition duration-300 ease-in cursor-pointer hover:scale-120 text-white dark:text-black text-2xl font-normal px-1 flex items-center justify-center"
+        @click="newPage(pageTotal)"
+        :disabled="todosStore.currentPage === pageTotal"
+        :class="(todosStore.currentPage === pageTotal)? 'opacity-50 cursor-default' : 'opacity-100 cursor-pointer hover:scale-120'"
+        class="transition duration-300 ease-in text-white dark:text-black text-xl font-normal px-1 flex items-center justify-center"
     >
-      next
+      >>
     </button>
   </main>
 </template>

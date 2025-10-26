@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth.js";
+import login from "../views/Login.vue"
+import register from "../views/Register.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,12 +17,12 @@ const router = createRouter({
     {
       path: "/login",
       name: "login",
-      component: () => import("../views/Login.vue"),
+      component: login,
     },
     {
       path: "/register",
       name: "register",
-      component: () => import("../views/Register.vue"),
+      component: register,
     },
     {
       path: "/profile",
@@ -32,12 +34,15 @@ const router = createRouter({
     },
   ],
 });
-router.beforeEach((to, from, next) => {
+router.beforeEach(  (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const authStore = useAuthStore();
     if (!authStore.token) {
-      authStore.refresh();
-      next();
+      authStore.refresh().then(() =>  {
+        })
+          .finally(() => {
+            next()
+          });
     } else {
       next();
     }

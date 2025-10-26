@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { axiosInstance } from "@/plugins/axios.js";
 import router from "@/router/index.js";
+import {toast} from "vue3-toastify";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -8,17 +9,25 @@ export const useAuthStore = defineStore("auth", {
   }),
   getters: {
     tokenExist() {
-      return JSON.parse(atob(this.token.split(".")[1]));
+      if (this.token) {
+        return JSON.parse(atob(this.token.split(".")[1]));
+      } else {
+        return false;
+      }
     },
   },
   actions: {
     register(data) {
       return new Promise((resolve, reject) => {
-        axiosInstance({ url: "register", data: data, method: "POST" })
+        const axiosInstanceRegister = axiosInstance.create();
+        axiosInstanceRegister({ url: "register", data: data, method: "POST" })
           .then((response) => {
             resolve(response.data);
           })
           .catch((error) => {
+            toast(error.response.data.message, {
+              autoClose: 5000,
+            });
             reject(error);
           });
       });
@@ -32,6 +41,9 @@ export const useAuthStore = defineStore("auth", {
             resolve(response.data);
           })
           .catch((error) => {
+            toast(error.response.data.message, {
+              autoClose: 5000,
+            });
             reject(error);
           });
       });

@@ -1,19 +1,15 @@
 <script>
-import { defineComponent } from "vue";
 import { useTodosStore } from "@/stores/todos.js";
 import todoList from "@/components/todoList.vue";
 import { useAuthStore } from "@/stores/auth.js";
 import addTodoBarComp from "@/components/addTodoBar.vue";
-import editTodoBarComp from "@/components/editTodoBar.vue";
 import pagination from "@/components/pagination.vue";
-import { toast } from "vue3-toastify";
 import { useDark, useToggle } from "@vueuse/core";
 
-export default defineComponent({
+export default {
   components: {
     todoList,
     addTodoBarComp,
-    editTodoBarComp,
     pagination,
   },
   setup() {
@@ -26,47 +22,19 @@ export default defineComponent({
   data() {
     return {
       selectCompleted: "all",
-      addTodoBar: false,
       editTodoBar: false,
+      addTodoBar: false,
     };
   },
   methods: {
-    goToHome() {
-      this.$router.push({ path: "/", replace: true });
-    },
     getSelectedTodos() {
-      if (this.selectCompleted === "completed") {
-        this.todosStore
-          .getTodosComplete({
-            complete: "complete",
-          })
-          .catch((error) => {
-            toast(error.response.data.message, {
-              autoClose: 5000,
-            });
-          });
-      } else if (this.selectCompleted === "unCompleted") {
-        this.todosStore
-          .getTodosComplete({
-            complete: "uncomplete",
-          })
-          .catch((error) => {
-            toast(error.response.data.message, {
-              autoClose: 5000,
-            });
-          });
-      } else {
-        this.todosStore.getTodos();
-      }
-    },
-    goToProfile() {
-      this.$router.push({ path: "/profile", replace: true });
+      this.todosStore.getTodos(this.selectCompleted)
     },
   },
   mounted() {
     this.todosStore.getTodos();
   },
-});
+};
 </script>
 
 <template>
@@ -89,7 +57,7 @@ export default defineComponent({
 
             <div class="relative">
               <div
-                @click="this.addTodoBar = !this.addTodoBar"
+                @click="addTodoBar = !addTodoBar"
                 class="bg-blue-600 dark:bg-blue-900 w-17 h-17 rounded-4xl text-white text-4xl text-center content-center font-light absolute top-4 -left-7 transition duration-300 ease-in cursor-pointer hover:scale-120"
               >
                 +
@@ -98,10 +66,10 @@ export default defineComponent({
 
             <div class="flex items-center gap-2">
               <div>
-                <button @click="this.toggleDark()">
+                <button @click="toggleDark()">
                   <font-awesome-icon
                     class="text-4xl text-white transition duration-300 ease-in cursor-pointer hover:scale-120"
-                    v-if="!this.isDark"
+                    v-if="!isDark"
                     icon="fa-solid fa-moon"
                   />
                   <font-awesome-icon
@@ -112,14 +80,17 @@ export default defineComponent({
                 </button>
               </div>
               <div
-                @click="goToProfile"
                 class="flex flex-col items-center gap-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
               >
                 <font-awesome-icon
                   class="text-white font-bold text-xl"
                   icon="fa-solid fa-id-card-clip"
                 />
-                <div class="text-white text-base font-medium">Profile</div>
+                <router-link
+                    class="text-white font-bold text-xl"
+                    :to="'profile'"
+                >Profile</router-link
+                >
               </div>
             </div>
           </div>
@@ -127,7 +98,7 @@ export default defineComponent({
       </div>
       <div class="h-full p-8">
         <div
-          v-if="this.todosStore.todos === null"
+          v-if="todosStore.todos === null"
           class="flex items-center justify-center flex-col h-full gap-5 max-w-7xl mx-auto"
         >
           <img
@@ -150,10 +121,10 @@ export default defineComponent({
             v-model="selectCompleted"
           >
             <option class="text-white" value="all">Все</option>
-            <option class="text-white" value="completed">
+            <option class="text-white" value="complete">
               Только выполненные
             </option>
-            <option class="text-white" value="unCompleted">
+            <option class="text-white" value="uncomplete">
               Не выполненные
             </option>
           </select>
@@ -163,8 +134,8 @@ export default defineComponent({
       </div>
     </div>
     <add-todo-bar-comp
-      v-if="addTodoBar"
-      @click.self="this.addTodoBar = !this.addTodoBar"
+        v-if="addTodoBar"
+        @cancel-add-todo-bar="addTodoBar = !addTodoBar"
     ></add-todo-bar-comp>
   </main>
 </template>

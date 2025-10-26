@@ -7,49 +7,27 @@ export const useTodosStore = defineStore("todos", {
     todos: [],
     total: "",
     newUrl: "",
+    params: {},
+    currentPage: 1,
   }),
   actions: {
-    getTodos(data) {
+    getTodos(complete=null, page=null) {
+      const params = this.params;
+      if (params.page) {
+        params.page = null;
+      }
+      if (complete) {
+        params.complete = complete;
+      }
+      if (page) {
+        params.page = page;
+      }
       return new Promise((resolve, reject) => {
-        axiosInstance({ url: "todos", data: data, method: "GET" })
+        axiosInstance({ url: "todos", params: params, method: "GET" })
           .then((response) => {
             this.todos = response.data.todos;
             this.total = response.data.total;
-            this.newUrl = response.config.url;
-            resolve(response.data);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
-    },
-    getTodosPage(data) {
-      return new Promise((resolve, reject) => {
-        axiosInstance({
-          url: `${this.newUrl === "todos" ? "todos?" : this.newUrl + "&"}page=${data.page}`,
-          data: data,
-          method: "GET",
-        })
-          .then((response) => {
-            this.todos = response.data.todos;
-            resolve(response.data);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
-    },
-    getTodosComplete(data) {
-      return new Promise((resolve, reject) => {
-        axiosInstance({
-          url: `todos?complete=${data.complete}`,
-          data: data,
-          method: "GET",
-        })
-          .then((response) => {
-            this.todos = response.data.todos;
-            this.total = response.data.total;
-            this.newUrl = response.config.url;
+            this.params = response.config.params;
             resolve(response.data);
           })
           .catch((error) => {

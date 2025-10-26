@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth.js";
-import { ref } from "vue";
+import {toast} from "vue3-toastify";
 
 const axiosInstance = axios.create({
   withCredentials: true,
@@ -12,15 +12,11 @@ axiosInstance.interceptors.request.use(
     const authStore = useAuthStore();
 
     if (authStore.token) {
-      const dateNow = ref(Date.now() / 1000);
-      if (dateNow.value > authStore.tokenExist.exp) {
-        console.log(authStore.token);
-        await authStore.refresh().then((response) => {
-          config.headers.Authorization = `Bearer ${authStore.token}`;
-        });
-      } else {
-        config.headers.Authorization = `Bearer ${authStore.token}`;
+      const dateNow = Date.now() / 1000;
+      if (dateNow > authStore.tokenExist.exp) {
+        await authStore.refresh()
       }
+      config.headers.Authorization = `Bearer ${authStore.token}`;
     }
 
     return config;
@@ -29,5 +25,17 @@ axiosInstance.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
+axiosInstance.interceptors.response.use(
+    function (response) {
+        return response;
+    },
+    function (error) {
+        toast(error.response.data.message, {
+            autoClose: 5000,
+        });
+        return Promise.reject(error);
+    }
+)
 
 export { axiosInstance };

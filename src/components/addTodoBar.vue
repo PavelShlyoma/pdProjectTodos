@@ -1,22 +1,17 @@
 <script>
-import { defineComponent } from "vue";
-import { toast } from "vue3-toastify";
 import { useTodosStore } from "@/stores/todos.js";
-export default defineComponent({
-
+export default {
+  emits: ["cancelAddTodoBar"],
   setup() {
     const todosStore = useTodosStore();
     return { todosStore };
   },
-
   data() {
     return {
       textTodo: "",
       isLoading: false,
     };
-
   },
-
   methods: {
     postTodoElement() {
       if (this.textTodo) {
@@ -25,28 +20,23 @@ export default defineComponent({
           .postTodos({
             text: this.textTodo,
           })
-          .then((res) => {
+          .then(() => {
             this.todosStore.getTodos();
-          })
-          .catch((error) => {
-            toast(error.response.data.message, {
-              autoClose: 5000,
-            });
           })
           .finally(() => {
             this.isLoading = false;
-            this.addTodoBar = false;
+            this.$emit("cancelAddTodoBar");
           });
       }
     },
   },
-
-});
+};
 </script>
 
 <template>
   <main
-    class="h-full fixed w-full inset-0 flex items-center justify-center flex-col p-2"
+      @click.self="$emit('cancelAddTodoBar')"
+      class="h-full fixed w-full inset-0 flex items-center justify-center flex-col p-2"
   >
     <div
       class="bg-gray-300 dark:bg-gray-600 rounded-2xl max-w-xl w-full flex items-center justify-between"
@@ -63,18 +53,19 @@ export default defineComponent({
       </div>
       <div class="flex flex-col items-center p-3 gap-3">
         <button
-          @click="this.textTodo = ''"
+          @click="textTodo = ''"
+          :disabled="!textTodo && isLoading"
           class="text-black dark:text-white border rounded font-normal p-1 border-primary-400 transition duration-300 ease-in cursor-pointer hover:scale-120"
         >
           Reset
         </button>
         <button
           :class="
-            !this.textTodo
+            !textTodo
               ? 'cursor-default opacity-60'
               : 'transition duration-300 ease-in cursor-pointer hover:scale-120'
           "
-          :disabled="!this.textTodo"
+          :disabled="!textTodo && isLoading"
           @click="postTodoElement"
           class="text-black dark:text-white border rounded font-normal p-1 border-primary-400 flex items-center justify-center"
         >
@@ -90,4 +81,4 @@ export default defineComponent({
     </div>
   </main>
 </template>
-<script setup lang="ts"></script>
+

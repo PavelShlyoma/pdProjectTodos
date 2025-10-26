@@ -1,107 +1,65 @@
 <script>
-import { defineComponent } from "vue";
 import { useAuthStore } from "@/stores/auth.js";
-import { mapActions } from "pinia";
-import { toast } from "vue3-toastify";
+import {useDark, useToggle} from "@vueuse/core";
 
 const emailCheckRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default defineComponent({
+export default {
+  setup() {
+    const authStore = useAuthStore();
+    const isDark = useDark();
+    const toggleDark = useToggle(isDark);
+    return { authStore, isDark, toggleDark };
+  },
   data() {
     return {
       isLoading: false,
       email: "",
       isEmailTouched: false,
-      errorEmailMessage: "",
 
       password: "",
       isPasswordTouched: false,
-      errorPasswordMessage: "",
       passwordRetry: "",
 
-      onOff: false,
+      passwordShow: false,
     };
   },
   computed: {
     isEmailValid() {
       return emailCheckRegex.test(this.email);
     },
-
-    isEmailError() {
-      if (!this.email) {
-        this.errorEmailMessage = "The field must not be empty.";
-      } else {
-        this.errorEmailMessage =
-          "The email you entered contains prohibited characters.";
-      }
-      return !this.isEmailValid && this.isEmailTouched;
-    },
-
     isPasswordValid() {
-      if (!this.password) {
-        this.errorPasswordMessage = "The field must not be empty.";
-      } else if (!/\d/.test(this.password)) {
-        this.errorPasswordMessage = "You need to add at least one digit.";
-      } else if (!/[a-z]/.test(this.password)) {
-        this.errorPasswordMessage =
-          "You need to add at least one lowercase letter.";
-      } else if (!/[A-Z]/.test(this.password)) {
-        this.errorPasswordMessage = "You must add at least one capital letter.";
-      } else if (!/\W/.test(this.password)) {
-        this.errorPasswordMessage =
-          "Please add at least one special character.";
-      } else if (!/.{8,}/.test(this.password)) {
-        this.errorPasswordMessage = "Enter a minimum of eight characters.";
-      }
-      return (
-        this.isPasswordTouched &&
-        !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/.test(this.password)
-      );
+      return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/.test(this.password);
     },
-
     isPasswordRetryValid() {
       return this.passwordRetry === this.password;
     },
-
     isDisabled() {
       return (
-        !this.isPasswordValid &&
-        this.isPasswordRetryValid &&
-        !this.isEmailError &&
-        this.password &&
-        !this.isLoading
+        !this.isPasswordValid ||
+        !this.isPasswordRetryValid ||
+        !this.isEmailValid ||
+        this.isLoading
       );
     },
   },
   methods: {
-    ...mapActions(useAuthStore, ["register"]),
-    goToLogin() {
-      this.$router.push({ path: "/login", replace: true });
-    },
-    goBack() {
-      window.history.back();
-    },
     sendRequestRegistration() {
       this.isLoading = true;
-      this.register({
+      this.authStore.register({
         email: this.email,
         password: this.password,
         password_retry: this.passwordRetry,
       })
-        .then((response) => {
-          this.goToLogin();
-        })
-        .catch((error) => {
-          toast(error.response.data.message, {
-            autoClose: 5000,
-          });
+        .then(() => {
+          this.$router.push({ path: "/login", replace: true });
         })
         .finally(() => {
           this.isLoading = false;
         });
     },
   },
-});
+};
 </script>
 
 <template>
@@ -113,7 +71,7 @@ export default defineComponent({
         action=""
       >
         <font-awesome-icon
-          @click="goBack"
+          @click="window.history.back();"
           class="text-white pt-2.5 text-2xl"
           icon="fa-solid fa-chevron-left"
         />
@@ -127,7 +85,7 @@ export default defineComponent({
           >Email</label
         >
         <input
-          :class="{ error: isEmailError }"
+          :class="{ error: !isEmailValid && isEmailTouched }"
           @blur="isEmailTouched = true"
           v-model="email"
           class="text-white font-normal p-3 rounded user-name mt-2"
@@ -135,8 +93,8 @@ export default defineComponent({
           type="email"
           placeholder="Enter your Email"
         />
-        <div class="text-base text-red-700 font-bold" v-if="isEmailError">
-          {{ errorEmailMessage }}
+        <div class="text-base text-red-700 font-bold" v-if="!isEmailValid && isEmailTouched">
+          The email was entered incorrectly
         </div>
 
         <div class="flex flex-col relative">
@@ -146,20 +104,20 @@ export default defineComponent({
             >Password</label
           >
           <input
-            :class="{ error: isPasswordValid }"
+            :class="{ error: !isPasswordValid && isPasswordTouched }"
             @blur="isPasswordTouched = true"
             v-model="password"
             class="text-white font-normal p-3 rounded password mt-2"
             id="password"
-            :type="onOff ? 'text' : 'password'"
+            :type="passwordShow ? 'text' : 'password'"
             placeholder="* * * * * *"
           />
-          <div class="text-base text-red-700 font-bold" v-if="isPasswordValid">
-            {{ errorPasswordMessage }}
+          <div class="text-base text-red-700 font-bold" v-if="!isPasswordValid && isPasswordTouched">
+            The password must have at least 1 uppercase letter, 1 number and 1 symbol, the password length must be at least 8 characters
           </div>
           <font-awesome-icon
-            @click="this.onOff = !this.onOff"
-            :icon="onOff ? 'fa-eye' : 'fa-eye-slash'"
+            @click="passwordShow = !passwordShow"
+            :icon="passwordShow ? 'fa-eye' : 'fa-eye-slash'"
             class="absolute right-3 top-17.5 text-2xl text-white opacity-70 transition duration-300 ease-in cursor-pointer hover:scale-103"
             icon="fa-solid"
           />
@@ -176,7 +134,7 @@ export default defineComponent({
             v-model="passwordRetry"
             class="text-white font-normal p-3 rounded password mt-2"
             id="passwordRetry"
-            :type="onOff ? 'text' : 'password'"
+            :type="passwordShow ? 'text' : 'password'"
             placeholder="* * * * * *"
           />
           <div
@@ -186,8 +144,8 @@ export default defineComponent({
             The passwords don't match
           </div>
           <font-awesome-icon
-            @click="this.onOff = !this.onOff"
-            :icon="onOff ? 'fa-eye' : 'fa-eye-slash'"
+            @click="passwordShow = !passwordShow"
+            :icon="passwordShow ? 'fa-eye' : 'fa-eye-slash'"
             class="absolute right-3 top-17.5 text-2xl text-white opacity-70 transition duration-300 ease-in cursor-pointer hover:scale-103"
             icon="fa-solid"
           />
@@ -195,9 +153,9 @@ export default defineComponent({
 
         <button
           :class="
-            !this.isDisabled ? 'opacity-45 cursor-default' : 'transition duration-300 ease-in cursor-pointer hover:scale-101'
+            isDisabled ? 'opacity-45 cursor-default' : 'transition duration-300 ease-in cursor-pointer hover:scale-101'
           "
-          :disabled="!isDisabled"
+          :disabled="isDisabled"
           class="flex items-center justify-center text-white bg-sky-700 p-3 mt-14 text-base font-normal rounded"
           type="submit"
         >

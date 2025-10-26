@@ -1,53 +1,43 @@
 <script>
-import { defineComponent } from "vue";
 import { useAuthStore } from "@/stores/auth.js";
-import { toast } from "vue3-toastify";
+import {useDark, useToggle} from "@vueuse/core";
 
-export default defineComponent({
+export default {
   setup() {
     const authStore = useAuthStore();
-    return { authStore }
+    const isDark = useDark();
+    const toggleDark = useToggle(isDark);
+    return { authStore, isDark, toggleDark };
   },
   data() {
     return {
       isLoading: false,
-      onOff: false,
+      passwordShow: false,
       password: "",
       email: "",
     };
   },
   computed: {
     isDisabled() {
-      return this.password && !this.isLoading;
+      return !this.password || !this.email || this.isLoading;
     },
   },
   methods: {
-     goToHome() {
-       this.$router.push({ path: "/", replace: true });
-    },
-    goBack() {
-      window.history.back();
-    },
     sendRequestLogin() {
       this.isLoading = true;
       this.authStore.login({
         email: this.email,
         password: this.password,
       })
-        .then((response) => {
-          this.goToHome();
-        })
-        .catch((error) => {
-          toast(error.response.data.message, {
-            autoClose: 5000,
-          });
+        .then(() => {
+          this.$router.push({ path: "/", replace: true });
         })
         .finally(() => {
           this.isLoading = false;
         });
     },
   },
-});
+};
 </script>
 
 <template>
@@ -59,7 +49,7 @@ export default defineComponent({
         action=""
       >
         <font-awesome-icon
-          @click="goBack"
+          @click="window.history.back();"
           class="text-white pt-2.5 text-2xl"
           icon="fa-solid fa-chevron-left"
         />
@@ -88,12 +78,12 @@ export default defineComponent({
             v-model="password"
             class="text-white font-normal p-3 rounded password mt-2"
             id="password"
-            :type="onOff ? 'text' : 'password'"
+            :type="passwordShow ? 'text' : 'password'"
             placeholder="* * * * * *"
           />
           <font-awesome-icon
-            @click="this.onOff = !this.onOff"
-            :icon="onOff ? 'fa-eye' : 'fa-eye-slash'"
+            @click="passwordShow = !passwordShow"
+            :icon="passwordShow ? 'fa-eye' : 'fa-eye-slash'"
             class="absolute right-3 top-17.5 text-2xl text-white opacity-70 transition duration-300 ease-in cursor-pointer hover:scale-103"
             icon="fa-solid"
           />
@@ -101,9 +91,9 @@ export default defineComponent({
 
         <button
           :class="
-            !this.isDisabled ? 'opacity-45 cursor-default' : 'transition duration-300 ease-in cursor-pointer hover:scale-101'
+            isDisabled ? 'opacity-45 cursor-default' : 'transition duration-300 ease-in cursor-pointer hover:scale-101'
           "
-          :disabled="!isDisabled"
+          :disabled="isDisabled"
           class="flex items-center justify-center text-white bg-sky-700 p-3 mt-14 text-base font-normal rounded"
           type="submit"
         >
