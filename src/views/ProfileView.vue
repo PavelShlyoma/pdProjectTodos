@@ -30,7 +30,7 @@ export default{
     },
   },
   mounted() {
-    this.todosStore.getTodos();
+    this.todosStore.getTodos('all');
   },
 };
 </script>
@@ -39,9 +39,21 @@ export default{
   <main class="h-full bg-black dark-bg-white">
     <div class="h-screen container px-8 sm:px-6 md:px-8 mx-auto">
       <div
-        class="text-white text-3xl font-bold text-center bg-gray-600 dark:bg-gray-800 rounded-2xl content-center p-5"
+        class="flex justify-between items-center text-white text-3xl font-bold text-center bg-gray-600 dark:bg-gray-800 rounded-2xl content-center p-5"
       >
-        Profile
+        <router-link
+            :to="'home'"
+            class="flex flex-col items-center gap-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
+        >
+          <font-awesome-icon
+              class="text-white font-bold text-xl"
+              icon="fa-solid fa-house"
+          />
+          <div class="text-white text-base font-medium">Index</div>
+        </router-link>
+        <div>
+          Profile
+        </div>
       </div>
 
       <div class="text-white text-2xl font-bold p-2 max-w-6xl mx-auto">
@@ -59,7 +71,8 @@ export default{
       <button
         @click="sendRequestLogout"
         :disabled="isLoading"
-        class="text-white text-3xl font-bold text-center cursor-pointer bg-gray-800 dark:bg-gray-400 w-full rounded p-3"
+        :class="isLoading? 'opacity-50 cursor-default' : 'opacity-100 cursor-pointer'"
+        class="text-white text-3xl font-bold text-center bg-gray-800 dark:bg-gray-400 w-full rounded p-3"
       >
         <svg
           v-if="isLoading"

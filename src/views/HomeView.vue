@@ -46,6 +46,7 @@ export default {
         >
           <div class="flex items-center justify-between">
             <div
+                @click="window.location.reload()"
               class="flex flex-col items-center gap-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
             >
               <font-awesome-icon
@@ -79,19 +80,19 @@ export default {
                   />
                 </button>
               </div>
-              <div
+              <router-link
+                  :to="'profile'"
                 class="flex flex-col items-center gap-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
               >
                 <font-awesome-icon
                   class="text-white font-bold text-xl"
                   icon="fa-solid fa-id-card-clip"
                 />
-                <router-link
+                <div
                     class="text-white font-bold text-xl"
-                    :to="'profile'"
-                >Profile</router-link
+                >Profile</div
                 >
-              </div>
+              </router-link>
             </div>
           </div>
         </div>

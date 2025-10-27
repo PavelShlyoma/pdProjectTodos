@@ -22,6 +22,7 @@ export default {
           })
           .then(() => {
             this.todosStore.getTodos();
+            this.todosStore.currentPage = 1;
           })
           .finally(() => {
             this.isLoading = false;

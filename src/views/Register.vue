@@ -72,7 +72,7 @@ export default {
       >
         <font-awesome-icon
           @click="window.history.back();"
-          class="text-white pt-2.5 text-2xl"
+          class="text-white pt-2.5 text-2xl transition duration-300 ease-in cursor-pointer hover:scale-103"
           icon="fa-solid fa-chevron-left"
         />
         <div class="text-white font-bold text-4xl opacity-87 mt-11">

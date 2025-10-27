@@ -60,6 +60,7 @@ export default {
       <button
         v-if="page - todosStore.currentPage < 4 && page - todosStore.currentPage > -4"
         @click="newPage(page)"
+        :disabled="isLoading"
         class="transition duration-300  ease-in cursor-pointer  hover:scale-110 text-white dark:text-black text-2xl font-normal flex items-center justify-center"
         :class="{ 'rounded scale-120 hover:scale-120': (todosStore.currentPage === page) }"
       >
