@@ -5,6 +5,7 @@ import { useAuthStore } from "@/stores/auth.js";
 import addTodoBarComp from "@/components/addTodoBar.vue";
 import pagination from "@/components/pagination.vue";
 import { useDark, useToggle } from "@vueuse/core";
+import { useRoute } from 'vue-router';
 
 export default {
   components: {
@@ -13,11 +14,14 @@ export default {
     pagination,
   },
   setup() {
-    const todosStore = useTodosStore();
-    const authStore = useAuthStore();
     const isDark = useDark();
     const toggleDark = useToggle(isDark);
-    return { todosStore, authStore, isDark, toggleDark };
+    const route = useRoute();
+
+    const todosStore = useTodosStore();
+    const authStore = useAuthStore();
+
+    return { todosStore, authStore, isDark, toggleDark, route };
   },
   data() {
     return {
@@ -26,27 +30,43 @@ export default {
       addTodoBar: false,
     };
   },
+  watch: {
+    'todosStore.params': {
+      handler() {
+        this.todosStore.getTodos();
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   methods: {
     getSelectedTodos() {
-      this.todosStore.getTodos(this.selectCompleted)
+      this.todosStore.params.complete = this.selectCompleted;
     },
   },
   mounted() {
-    this.todosStore.getTodos();
+    const page = this.route.query.page;
+    if (page) {
+      this.todosStore.params.page = page;
+    }
+    const complete = this.route.query.complete;
+    if (complete) {
+      this.todosStore.params.complete = complete;
+    }
   },
 };
 </script>
 
 <template>
   <main class="h-full">
-    <div class="h-screen bg-black dark:bg-white flex justify-between flex-col">
+    <div class="h-full bg-black dark:bg-white flex justify-between flex-col">
       <div class="bg-gray-600 dark:bg-gray-800">
         <div
           class="container px-8 sm:px-6 md:px-8 h-24 content-center pb-1 m-auto"
         >
           <div class="flex items-center justify-between">
-            <div
-                @click="window.location.reload()"
+            <router-link
+                to="/home"
               class="flex flex-col items-center gap-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
             >
               <font-awesome-icon
@@ -54,7 +74,7 @@ export default {
                 icon="fa-solid fa-house"
               />
               <div class="text-white text-base font-medium">Index</div>
-            </div>
+            </router-link>
 
             <div class="relative">
               <div

@@ -22,6 +22,14 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: login,
+      // redirect: () => {
+      //   const authStore = useAuthStore();
+      //   if (authStore.token) {
+      //     return {
+      //       path: "/home",
+      //     }
+      //   }
+      // },
     },
     {
       path: "/register",
@@ -42,11 +50,7 @@ router.beforeEach(  (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const authStore = useAuthStore();
     if (!authStore.token) {
-      authStore.refresh().then(() =>  {
-        })
-          .finally(() => {
-            next()
-          });
+      authStore.refresh().finally(() => next());
     } else {
       next();
     }

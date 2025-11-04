@@ -20,11 +20,7 @@ export default {
     editTodoElement() {
       if (this.textTodo) {
         this.isLoading = true;
-        if (this.selectedOption === "unComplete") {
-          this.complete = false;
-        } else {
-          this.complete = true;
-        }
+        this.complete = this.selectedOption !== "unComplete";
         this.todosStore
           .editTodos({
             id: this.todo.id,
@@ -32,8 +28,9 @@ export default {
             is_complete: this.complete,
           })
           .then(() => {
-            this.todo.text = this.textTodo;
-            this.todo.is_complete = this.complete;
+            const index = this.todosStore.todos.findIndex(obj => obj.id === this.todo.id);
+            this.todosStore.todos[index].text = this.textTodo;
+            this.todosStore.todos[index].is_complete = this.complete;
           })
           .finally(() => {
             this.isLoading = false;
@@ -48,8 +45,12 @@ export default {
           id: this.todo.id,
         })
         .then(() => {
-          this.todosStore.getTodos();
-          this.todosStore.currentPage = 1;
+          if (this.todosStore.params.page === 1) {
+            const index = this.todosStore.todos.findIndex(obj => obj.id === this.todo.id);
+            this.todosStore.todos.splice(index, 1);
+          } else {
+            this.todosStore.params.page = 1;
+          }
         })
         .finally(() => {
           this.isLoading = false;

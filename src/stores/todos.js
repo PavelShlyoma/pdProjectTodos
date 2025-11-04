@@ -1,4 +1,3 @@
-import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { axiosInstance } from "@/plugins/axios.js";
 
@@ -6,28 +5,18 @@ export const useTodosStore = defineStore("todos", {
   state: () => ({
     todos: [],
     total: "",
-    newUrl: "",
-    params: {},
-    currentPage: 1,
+    params: {
+      complete: 'all',
+      page: 1,
+    },
   }),
   actions: {
-    getTodos(complete=null, page=null) {
-      const params = this.params;
-      if (params.page) {
-        params.page = null;
-      }
-      if (complete) {
-        params.complete = complete;
-      }
-      if (page) {
-        params.page = page;
-      }
+    getTodos() {
       return new Promise((resolve, reject) => {
-        axiosInstance({ url: "todos", params: params, method: "GET" })
+        axiosInstance({ url: "todos", params: this.params, method: "GET" })
           .then((response) => {
             this.todos = response.data.todos;
             this.total = response.data.total;
-            this.params = response.config.params;
             resolve(response.data);
           })
           .catch((error) => {

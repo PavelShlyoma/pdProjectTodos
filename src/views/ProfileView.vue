@@ -30,41 +30,69 @@ export default{
     },
   },
   mounted() {
-    this.todosStore.getTodos('all');
+    this.todosStore.params.complete = 'all'
+    this.todosStore.getTodos();
   },
 };
 </script>
 
 <template>
-  <main class="h-full bg-black dark-bg-white">
-    <div class="h-screen container px-8 sm:px-6 md:px-8 mx-auto">
+  <main class="h-full bg-black dark:bg-white">
+    <div class="bg-gray-600 dark:bg-gray-800">
       <div
-        class="flex justify-between items-center text-white text-3xl font-bold text-center bg-gray-600 dark:bg-gray-800 rounded-2xl content-center p-5"
+          class="container px-8 sm:px-6 md:px-8 h-24 content-center pb-1 m-auto"
       >
-        <router-link
-            :to="'home'"
-            class="flex flex-col items-center gap-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
-        >
-          <font-awesome-icon
-              class="text-white font-bold text-xl"
-              icon="fa-solid fa-house"
-          />
-          <div class="text-white text-base font-medium">Index</div>
-        </router-link>
-        <div>
-          Profile
+        <div class="flex items-center justify-between">
+          <router-link
+              to="/home"
+              class="flex flex-col items-center gap-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
+          >
+            <font-awesome-icon
+                class="text-white font-bold text-xl"
+                icon="fa-solid fa-house"
+            />
+            <div class="text-white text-base font-medium">Index</div>
+          </router-link>
+          <div class="flex items-center gap-2">
+            <div>
+              <button @click="toggleDark()">
+                <font-awesome-icon
+                    class="text-4xl text-white transition duration-300 ease-in cursor-pointer hover:scale-120"
+                    v-if="!isDark"
+                    icon="fa-solid fa-moon"
+                />
+                <font-awesome-icon
+                    class="text-4xl text-white transition duration-300 ease-in cursor-pointer hover:scale-120"
+                    v-else
+                    icon="fa-solid fa-sun"
+                />
+              </button>
+            </div>
+            <router-link
+                :to="'profile'"
+                class="flex flex-col items-center gap-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
+            >
+              <font-awesome-icon
+                  class="text-white font-bold text-xl"
+                  icon="fa-solid fa-id-card-clip"
+              />
+              <div
+                  class="text-white font-bold text-xl"
+              >Profile</div
+              >
+            </router-link>
+          </div>
         </div>
       </div>
+    </div>
+    <div class=" container px-8 sm:px-6 md:px-8 mx-auto">
 
-      <div class="text-white text-2xl font-bold p-2 max-w-6xl mx-auto">
+
+      <div class="text-white dark:text-black text-2xl font-bold p-2 max-w-6xl mx-auto">
         Email: {{ authStore.tokenExist.email }}
       </div>
 
-      <div class="text-white text-2xl font-bold p-2 max-w-6xl mx-auto">
-        Tasks created: {{ todosStore.total }}
-      </div>
-
-      <div class="text-white text-2xl font-bold p-2 max-w-6xl mx-auto">
+      <div class="text-white dark:text-black text-2xl font-bold p-2 max-w-6xl mx-auto">
         Role: {{ authStore.tokenExist.role }}
       </div>
 
@@ -72,7 +100,7 @@ export default{
         @click="sendRequestLogout"
         :disabled="isLoading"
         :class="isLoading? 'opacity-50 cursor-default' : 'opacity-100 cursor-pointer'"
-        class="text-white text-3xl font-bold text-center bg-gray-800 dark:bg-gray-400 w-full rounded p-3"
+        class="text-white dark:text-black text-3xl font-bold text-center bg-gray-800 dark:bg-gray-400 w-full rounded p-3"
       >
         <svg
           v-if="isLoading"

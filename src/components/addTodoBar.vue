@@ -21,8 +21,10 @@ export default {
             text: this.textTodo,
           })
           .then(() => {
-            this.todosStore.getTodos();
-            this.todosStore.currentPage = 1;
+            if (this.todosStore.params.page === 1) {
+              this.todosStore.getTodos()
+            }
+            this.todosStore.params.page = 1;
           })
           .finally(() => {
             this.isLoading = false;
@@ -55,7 +57,7 @@ export default {
       <div class="flex flex-col items-center p-3 gap-3">
         <button
           @click="textTodo = ''"
-          :disabled="!textTodo && isLoading"
+          :disabled="!textTodo || isLoading"
           class="text-black dark:text-white border rounded font-normal p-1 border-primary-400 transition duration-300 ease-in cursor-pointer hover:scale-120"
         >
           Reset
@@ -66,7 +68,7 @@ export default {
               ? 'cursor-default opacity-60'
               : 'transition duration-300 ease-in cursor-pointer hover:scale-120'
           "
-          :disabled="!textTodo && isLoading"
+          :disabled="!textTodo || isLoading"
           @click="postTodoElement"
           class="text-black dark:text-white border rounded font-normal p-1 border-primary-400 flex items-center justify-center"
         >
