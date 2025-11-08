@@ -60,63 +60,11 @@ export default {
 <template>
   <main class="h-full">
     <div class="h-full bg-black dark:bg-white flex justify-between flex-col">
-      <div class="bg-gray-600 dark:bg-gray-800">
-        <div
-          class="container px-8 sm:px-6 md:px-8 h-24 content-center pb-1 m-auto"
-        >
-          <div class="flex items-center justify-between">
-            <router-link
-                to="/home"
-              class="flex flex-col items-center gap-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
-            >
-              <font-awesome-icon
-                class="text-white font-bold text-xl"
-                icon="fa-solid fa-house"
-              />
-              <div class="text-white text-base font-medium">Index</div>
-            </router-link>
-
-            <div class="relative">
-              <div
-                @click="addTodoBar = !addTodoBar"
-                class="bg-blue-600 dark:bg-blue-900 w-17 h-17 rounded-4xl text-white text-4xl text-center content-center font-light absolute top-4 -left-7 transition duration-300 ease-in cursor-pointer hover:scale-120"
-              >
-                +
-              </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <div>
-                <button @click="toggleDark()">
-                  <font-awesome-icon
-                    class="text-4xl text-white transition duration-300 ease-in cursor-pointer hover:scale-120"
-                    v-if="!isDark"
-                    icon="fa-solid fa-moon"
-                  />
-                  <font-awesome-icon
-                    class="text-4xl text-white transition duration-300 ease-in cursor-pointer hover:scale-120"
-                    v-else
-                    icon="fa-solid fa-sun"
-                  />
-                </button>
-              </div>
-              <router-link
-                  :to="'profile'"
-                class="flex flex-col items-center gap-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
-              >
-                <font-awesome-icon
-                  class="text-white font-bold text-xl"
-                  icon="fa-solid fa-id-card-clip"
-                />
-                <div
-                    class="text-white font-bold text-xl"
-                >Profile</div
-                >
-              </router-link>
-            </div>
-          </div>
-        </div>
-      </div>
+      <button
+          @click="addTodoBar = !addTodoBar"
+          class="text-white max-w-80 mx-auto text-xl font-normal bg-gray-600 dark:bg-gray-800 p-4 rounded-md m-4 transition duration-300 ease-in cursor-pointer hover:scale-110">
+        Add task
+      </button>
       <div class="h-full p-8">
         <div
           v-if="todosStore.todos === null"

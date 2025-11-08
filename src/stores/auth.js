@@ -68,7 +68,6 @@ export const useAuthStore = defineStore("auth", {
             resolve(response.data);
           })
           .catch((error) => {
-            router.push({ path: "/login", replace: true });
             reject(error);
           });
       });

@@ -20,7 +20,7 @@ export default {
     visiblePage() {
       if (this.pageTotal > 1) {
         const delta = 2;
-        const current = this.todosStore.params.page;
+        const current = +this.todosStore.params.page;
 
         const range = [];
         const rangeWithDots = [];
@@ -84,8 +84,8 @@ export default {
       <button
         @click="newPage(page)"
         :disabled="isLoading"
-        class="transition duration-300  ease-in  text-white dark:text-black text-2xl font-normal flex items-center justify-center"
-        :class="{ 'rounded scale-120 hover:scale-120': (+todosStore.params.page === page), 'cursor-pointer hover:scale-110': page !== '...' }"
+        class="transition duration-300 ease-in  text-white dark:text-black text-2xl font-normal flex items-center justify-center"
+        :class="{ 'scale-120': (+todosStore.params.page === page), 'cursor-pointer hover:scale-120': page !== '...' && (+todosStore.params.page !== page) }"
       >
         {{ page }}
       </button>

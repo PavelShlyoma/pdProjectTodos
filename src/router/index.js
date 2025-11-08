@@ -12,6 +12,7 @@ const router = createRouter({
       component: () => import("../views/HomeView.vue"),
       meta: {
         requiresAuth: true,
+        layout: "default",
       },
     },
     {
@@ -22,19 +23,19 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: login,
-      // redirect: () => {
-      //   const authStore = useAuthStore();
-      //   if (authStore.token) {
-      //     return {
-      //       path: "/home",
-      //     }
-      //   }
-      // },
+      meta: {
+        requiresGuest: true,
+        layout: 'auth',
+      },
     },
     {
       path: "/register",
       name: "register",
       component: register,
+      meta: {
+        requiresGuest: true,
+        layout: 'auth',
+      },
     },
     {
       path: "/profile",
@@ -42,18 +43,24 @@ const router = createRouter({
       component: () => import("../views/ProfileView.vue"),
       meta: {
         requiresAuth: true,
+        layout: "default",
       },
     },
   ],
 });
-router.beforeEach(  (to, from, next) => {
+router.beforeEach(   (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const authStore = useAuthStore();
     if (!authStore.token) {
-      authStore.refresh().finally(() => next());
+      console.log('requiresAuth', authStore.token)
+      authStore.refresh().then(() => next()).catch(() => next('/login'));
     } else {
       next();
     }
+  } else if (to.meta.requiresGuest) {
+    const authStore = useAuthStore();
+    console.log('requiresGuest', authStore.token)
+    authStore.refresh().then(() => next('/home')).catch(() => next());
   } else {
     next();
   }

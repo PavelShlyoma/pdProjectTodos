@@ -52,7 +52,7 @@ export default {
 
         <label
           class="text-white dark:text-black text-base font-normal opacity-87 mt-12"
-          for="Username"
+          for="email"
           >Email</label
         >
         <input
