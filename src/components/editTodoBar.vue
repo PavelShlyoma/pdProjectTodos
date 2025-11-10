@@ -46,8 +46,7 @@ export default {
         })
         .then(() => {
           if (this.todosStore.params.page === 1) {
-            const index = this.todosStore.todos.findIndex(obj => obj.id === this.todo.id);
-            this.todosStore.todos.splice(index, 1);
+            this.todosStore.getTodos()
           } else {
             this.todosStore.params.page = 1;
           }
@@ -66,49 +65,54 @@ export default {
     @click.self="$emit('cancelEditTodoBar')"
     class="h-full fixed w-full inset-0 flex items-center justify-center flex-col p-2"
   >
-    <div
+    <form
+        @submit.prevent="editTodoElement"
       class="bg-gray-300 dark:bg-gray-600 rounded-2xl max-w-xl w-full flex items-center justify-between"
     >
       <div class="flex flex-col">
-        <h3 class="text-black dark:text-white font-normal p-3">Edit Task</h3>
+        <h3 class="text-black dark:text-white font-normal p-3">{{ $t('home.edit.label.base') }}</h3>
         <input
           v-model="textTodo"
           class="text-black dark:text-white bg-gray-400 dark:bg-gray-500 font-normal p-3 rounded mt-2 border border-primary-400 m-3 w-100"
           id="text"
           type="text"
-          placeholder="Do math homework"
+          :placeholder="$t('home.edit.placeholder')"
         />
         <div
           v-if="textTodo"
-          class="text-black dark:text-white flex justify-between bg-gray-400 dark:bg-gray-500 font-normal p-3 rounded mt-2 border border-primary-400 m-3 w-100 cursor-pointer"
+          class="text-black dark:text-white flex justify-between bg-gray-400 dark:bg-gray-500 font-normal p-3 rounded mt-2 border border-primary-400 m-3 w-100"
         >
           <input
+              class="cursor-pointer"
             type="radio"
             id="complete"
             value="complete"
             v-model="selectedOption"
           />
-          <label for="complete">Complete</label>
+          <label class="cursor-pointer" for="complete">{{ $t('home.edit.label.complete') }}</label>
 
           <input
+              class="cursor-pointer"
             type="radio"
             id="unComplete"
             value="unComplete"
             v-model="selectedOption"
           />
-          <label for="unComplete">Un complete</label>
+          <label class="cursor-pointer" for="unComplete">{{ $t('home.edit.label.unComplete') }}</label>
         </div>
       </div>
       <div class="flex flex-col items-center p-3 gap-3">
         <button
           @click="textTodo = ''"
+          type="button"
           class="text-black dark:text-white border rounded font-normal p-1 border-primary-400 transition duration-300 ease-in cursor-pointer hover:scale-120"
         >
-          Reset
+          {{ $t('home.edit.button.reset') }}
         </button>
         <button
           @click="deleteTodoElement"
           :disabled="isLoading"
+          type="button"
           class="text-black dark:text-white border rounded font-normal p-1 border-primary-400 transition duration-300 ease-in cursor-pointer hover:scale-120 flex items-center justify-center"
         >
           <svg
@@ -117,7 +121,7 @@ export default {
             viewBox="0 0 24 24"
           >
             <font-awesome-icon icon="fa-solid fa-circle-notch" /></svg
-          >Delete task
+          >{{ $t('home.edit.button.delete') }}
         </button>
         <button
           :class="
@@ -126,7 +130,7 @@ export default {
               : 'transition duration-300 ease-in cursor-pointer hover:scale-120'
           "
           :disabled="!textTodo && isLoading"
-          @click="editTodoElement"
+          type="submit"
           class="text-black dark:text-white border rounded font-normal p-1 border-primary-400 flex items-center justify-center"
         >
           <svg
@@ -135,9 +139,9 @@ export default {
             viewBox="0 0 24 24"
           >
             <font-awesome-icon icon="fa-solid fa-circle-notch" /></svg
-          >Submit
+          >{{ $t('home.edit.button.submit') }}
         </button>
       </div>
-    </div>
+    </form>
   </main>
 </template>

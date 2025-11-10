@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <main class="flex flex-col gap-2 max-w-5xl mx-auto">
+  <section class="flex flex-col gap-2 max-w-5xl mx-auto">
     <button
       :class="{ 'opacity-50': todo.is_complete }"
       class="bg-gray-600 dark:bg-gray-800 flex gap-3 items-center rounded-2xl p-2 transition duration-300 ease-in cursor-pointer hover:scale-101"
@@ -79,5 +79,5 @@ export default {
       v-if="editTodoBar"
       @cancel-edit-todo-bar="editTodoBar = !editTodoBar"
     ></edit-todo-bar-comp>
-  </main>
+  </section>
 </template>

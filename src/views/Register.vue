@@ -71,13 +71,13 @@ export default {
         action=""
       >
         <div class="text-white dark:text-black font-bold text-4xl opacity-87 mt-11">
-          Register
+          {{ $t('auth.register.base') }}
         </div>
 
         <label
           class="text-white dark:text-black text-base font-normal opacity-87 mt-12"
           for="email"
-          >Email</label
+          >{{ $t('auth.login.label') }}</label
         >
         <input
           :class="{ error: !isEmailValid && isEmailTouched }"
@@ -86,17 +86,17 @@ export default {
           class="text-white dark:text-black font-normal p-3 rounded user-name mt-2"
           id="email"
           type="email"
-          placeholder="Enter your Email"
+          :placeholder="$t('auth.login.placeholder')"
         />
         <div class="text-base text-red-700 font-bold" v-if="!isEmailValid && isEmailTouched">
-          The email was entered incorrectly
+          {{ $t('auth.login.error.message') }}
         </div>
 
         <div class="flex flex-col relative">
           <label
             class="text-white text-base font-normal opacity-87 mt-6"
             for="password"
-            >Password</label
+            >{{ $t('auth.password.base') }}</label
           >
           <input
             :class="{ error: !isPasswordValid && isPasswordTouched }"
@@ -108,7 +108,7 @@ export default {
             placeholder="* * * * * *"
           />
           <div class="text-base text-red-700 font-bold" v-if="!isPasswordValid && isPasswordTouched">
-            The password must have at least 1 uppercase letter, 1 number and 1 symbol, the password length must be at least 8 characters
+            {{ $t('auth.password.error.message') }}
           </div>
           <font-awesome-icon
             @click="passwordShow = !passwordShow"
@@ -122,7 +122,7 @@ export default {
           <label
             class="text-white dark:text-black text-base font-normal opacity-87 mt-6"
             for="passwordRetry"
-            >Confirm Password</label
+            >{{ $t('auth.password.label') }}</label
           >
           <input
             :class="{ error: !isPasswordRetryValid }"
@@ -136,7 +136,7 @@ export default {
             class="text-base text-red-700 font-bold"
             v-if="!isPasswordRetryValid"
           >
-            The passwords don't match
+            {{ $t('auth.password.error.retry.message') }}
           </div>
           <font-awesome-icon
             @click="passwordShow = !passwordShow"
@@ -160,17 +160,17 @@ export default {
             viewBox="0 0 24 24"
           >
             <font-awesome-icon icon="fa-solid fa-circle-notch" /></svg
-          >Register
+          >{{ $t('auth.register.button') }}
         </button>
 
         <div class="flex gap-2">
           <div class="text-white dark:text-black mt-12 opacity-87 text-xs font-normal">
-            Already have an account?
+            {{ $t('auth.register.message') }}
           </div>
           <router-link
             class="text-white dark:text-black mt-12 text-xs font-normal transition duration-300 ease-in cursor-pointer hover:scale-101"
             :to="'login'"
-            >Login</router-link
+            >{{ $t('auth.login.base') }}</router-link
           >
         </div>
       </form>

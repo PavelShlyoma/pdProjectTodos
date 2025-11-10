@@ -41,33 +41,33 @@ export default {
 </script>
 
 <template>
-  <div class="h-full">
-    <div class="h-full bg-black dark:bg-white">
+  <div class="size-full">
+    <div class="size-full bg-black dark:bg-white">
       <form
         @submit.prevent="sendRequestLogin"
         class="container px-4 sm:px-6 md:px-8 m-auto flex justify-center flex-col pt-10"
         action=""
       >
-        <div class="text-white dark:text-black font-bold text-4xl opacity-87 mt-11">Login</div>
+        <div class="text-white dark:text-black font-bold text-4xl opacity-87 mt-11">{{ $t('auth.login.base') }}</div>
 
         <label
           class="text-white dark:text-black text-base font-normal opacity-87 mt-12"
           for="email"
-          >Email</label
+          >{{ $t('auth.login.label') }}</label
         >
         <input
           v-model="email"
           class="text-white dark:text-black font-normal p-3 rounded user-name mt-2"
           id="email"
           type="email"
-          placeholder="Enter your Email"
+          :placeholder="$t('auth.login.placeholder')"
         />
 
         <div class="flex flex-col relative">
           <label
             class="text-white dark:text-black text-base font-normal opacity-87 mt-6"
             for="password"
-            >Password</label
+            >{{ $t('auth.password.base') }}</label
           >
           <input
             v-model="password"
@@ -98,17 +98,17 @@ export default {
             viewBox="0 0 24 24"
           >
             <font-awesome-icon icon="fa-solid fa-circle-notch" /></svg
-          >Login
+          >{{ $t('auth.login.button') }}
         </button>
 
         <div class="flex gap-2">
           <div class="text-white dark:text-black mt-12 opacity-87 text-xs font-normal">
-            Don’t have an account?
+            {{ $t('auth.login.message') }}
           </div>
           <router-link
             class="text-white dark:text-black mt-12 text-xs font-normal transition duration-300 ease-in cursor-pointer hover:scale-101"
             :to="'register'"
-            >Register</router-link
+            >{{ $t('auth.register.base') }}</router-link
           >
         </div>
       </form>

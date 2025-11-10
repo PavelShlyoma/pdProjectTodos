@@ -3,6 +3,7 @@ import { createPinia } from "pinia";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import i18n from './i18n'
 
 import "./assets/main.css";
 import "vue3-toastify/dist/index.css";
@@ -18,4 +19,5 @@ app.config.globalProperties.$axios = axiosInstance;
 app.use(createPinia());
 app.use(router);
 app.component("font-awesome-icon", FontAwesomeIcon);
+app.use(i18n)
 app.mount("#app");

@@ -21,7 +21,7 @@ export default {
     const todosStore = useTodosStore();
     const authStore = useAuthStore();
 
-    return { todosStore, authStore, isDark, toggleDark, route };
+    return { todosStore, authStore, isDark, toggleDark, route, };
   },
   data() {
     return {
@@ -58,14 +58,14 @@ export default {
 </script>
 
 <template>
-  <main class="h-full">
-    <div class="h-full bg-black dark:bg-white flex justify-between flex-col">
+  <section>
+    <div class="bg-black dark:bg-white flex justify-between flex-col">
       <button
           @click="addTodoBar = !addTodoBar"
           class="text-white max-w-80 mx-auto text-xl font-normal bg-gray-600 dark:bg-gray-800 p-4 rounded-md m-4 transition duration-300 ease-in cursor-pointer hover:scale-110">
-        Add task
+        {{ $t('home.add.label') }}
       </button>
-      <div class="h-full p-8">
+      <div class="p-8">
         <div
           v-if="todosStore.todos === null"
           class="flex items-center justify-center flex-col h-full gap-5 max-w-7xl mx-auto"
@@ -76,10 +76,10 @@ export default {
             alt=""
           />
           <h3 class="text-white dark:text-black text-3xl font-normal">
-            What do you want to do today?
+            {{ $t('home.empty.message.title') }}
           </h3>
           <p class="text-white dark:text-black text-2xl font-normal">
-            Tap + to add your tasks
+            {{ $t('home.empty.message.text') }}
           </p>
         </div>
 
@@ -89,12 +89,12 @@ export default {
             class="text-white bg-gray-600 dark:bg-gray-800 p-1 rounded m-2 transition duration-300 ease-in cursor-pointer hover:scale-120"
             v-model="selectCompleted"
           >
-            <option class="text-white" value="all">Все</option>
+            <option class="text-white" value="all">{{ $t('home.select.all') }}</option>
             <option class="text-white" value="complete">
-              Только выполненные
+              {{ $t('home.select.complete') }}
             </option>
             <option class="text-white" value="uncomplete">
-              Не выполненные
+              {{ $t('home.select.unComplete') }}
             </option>
           </select>
           <todo-list :todos="todosStore.todos" />
@@ -106,5 +106,5 @@ export default {
         v-if="addTodoBar"
         @cancel-add-todo-bar="addTodoBar = !addTodoBar"
     ></add-todo-bar-comp>
-  </main>
+  </section>
 </template>

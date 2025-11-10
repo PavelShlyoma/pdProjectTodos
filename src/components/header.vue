@@ -1,5 +1,6 @@
 <script>
 import { useDark, useToggle } from "@vueuse/core";
+import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 export default {
   setup() {
@@ -8,10 +9,13 @@ export default {
 
     return { isDark, toggleDark };
   },
+  components: {
+    LanguageSwitcher,
+  }
 };
 </script>
 <template>
-  <header class="bg-gray-600 dark:bg-gray-800">
+  <header class="bg-gray-600 dark:bg-gray-800 sticky top-0 left-0 w-full">
     <div
         class="container px-8 sm:px-6 md:px-8 h-24 content-center pb-1 m-auto"
     >
@@ -24,9 +28,12 @@ export default {
               class="text-white font-bold text-xl"
               icon="fa-solid fa-house"
           />
-          <div class="text-white text-base font-medium">Index</div>
+          <div class="text-white text-base font-medium">{{ $t('header.router.index') }}</div>
         </router-link>
         <div class="flex items-center gap-2">
+          <div>
+            <language-switcher />
+          </div>
           <div>
             <button @click="toggleDark()">
               <font-awesome-icon
@@ -51,7 +58,7 @@ export default {
             />
             <div
                 class="text-white font-bold text-xl"
-            >Profile</div
+            >{{ $t('header.router.profile') }}</div
             >
           </router-link>
         </div>

@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { axiosInstance } from "@/plugins/axios.js";
 import router from "@/router/index.js";
 import {toast} from "vue3-toastify";
+import path from "path";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({

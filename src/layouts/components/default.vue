@@ -8,6 +8,8 @@ export default {
 </script>
 
 <template>
+  <main class="bg-black dark:bg-white h-full">
     <Header></Header>
     <router-view />
+  </main>
 </template>

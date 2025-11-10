@@ -60,7 +60,7 @@ export default {
 </script>
 
 <template>
-  <main
+  <section
     v-if="visiblePage.length !== 0"
     class="flex justify-center items-center mt-6"
   >
@@ -107,5 +107,5 @@ export default {
     >
       >>
     </button>
-  </main>
+  </section>
 </template>

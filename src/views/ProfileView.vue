@@ -37,16 +37,16 @@ export default{
 </script>
 
 <template>
-  <main class="h-full bg-black dark:bg-white">
+  <main class="bg-black dark:bg-white">
     <div class=" container px-8 sm:px-6 md:px-8 mx-auto">
 
 
       <div class="text-white dark:text-black text-2xl font-bold p-2 max-w-6xl mx-auto">
-        Email: {{ authStore.tokenExist.email }}
+        {{ $t('profile.email') }} {{ authStore.tokenExist.email }}
       </div>
 
       <div class="text-white dark:text-black text-2xl font-bold p-2 max-w-6xl mx-auto">
-        Role: {{ authStore.tokenExist.role }}
+        {{ $t('profile.role.title') }} {{ $t('profile.role.'+authStore.tokenExist.role) }}
       </div>
 
       <button
@@ -62,7 +62,7 @@ export default{
         >
           <font-awesome-icon icon="fa-solid fa-circle-notch" />
         </svg>
-        Logout
+        {{ $t('profile.button') }}
       </button>
     </div>
   </main>
