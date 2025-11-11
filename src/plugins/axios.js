@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth.js";
 import {toast} from "vue3-toastify";
+import router from '@/router'
 
 const axiosInstance = axios.create({
   withCredentials: true,
@@ -31,6 +32,7 @@ axiosInstance.interceptors.response.use(
         return response;
     },
     function (error) {
+        router.push({ path: "/login", replace: true });
         toast(error.response.data.message, {
             autoClose: 5000,
         });

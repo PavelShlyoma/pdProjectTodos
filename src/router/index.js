@@ -52,14 +52,12 @@ router.beforeEach(   (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const authStore = useAuthStore();
     if (!authStore.token) {
-      console.log('requiresAuth', authStore.token)
       authStore.refresh().then(() => next()).catch(() => next('/login'));
     } else {
       next();
     }
   } else if (to.meta.requiresGuest) {
     const authStore = useAuthStore();
-    console.log('requiresGuest', authStore.token)
     authStore.refresh().then(() => next('/home')).catch(() => next());
   } else {
     next();

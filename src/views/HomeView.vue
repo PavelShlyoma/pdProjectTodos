@@ -34,6 +34,7 @@ export default {
     'todosStore.params': {
       handler() {
         this.todosStore.getTodos();
+        this.$router.push({ query: this.todosStore.params });
       },
       deep: true,
       immediate: true,
