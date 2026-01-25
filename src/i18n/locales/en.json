@@ -28,7 +28,7 @@
   },
   "header": {
     "router": {
-      "index": "Index",
+      "index": "Main",
       "profile": "Profile"
     }
   },
